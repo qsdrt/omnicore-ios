@@ -14,6 +14,14 @@
       "tintColor": "#e9b960",
       "versions": [
         {
+          "version": "1.0.3",
+          "date": "2026-11-13",
+          "downloadURL": "https://github.com/qsdrt/omnicore-ios/releases/download/v1.0.3/OmniCore.ipa",
+          "size": 285920,
+          "minOSVersion": "16.0",
+          "localizedDescription": "Mise à jour automatique."
+        },
+        {
           "version": "1.0.2",
           "date": "2026-11-13",
           "downloadURL": "https://github.com/qsdrt/omnicore-ios/releases/download/v1.0.2/OmniCore.ipa",
@@ -28,10 +36,10 @@
           "NSLocalNetworkUsageDescription": "OmniCore se connecte au PC de la maison sur le réseau local."
         }
       },
-      "version": "1.0.2",
+      "version": "1.0.3",
       "versionDate": "2026-11-13",
-      "downloadURL": "https://github.com/qsdrt/omnicore-ios/releases/download/v1.0.2/OmniCore.ipa",
-      "size": 242281
+      "downloadURL": "https://github.com/qsdrt/omnicore-ios/releases/download/v1.0.3/OmniCore.ipa",
+      "size": 285920
     }
   ],
   "news": []
