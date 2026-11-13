@@ -20,8 +20,12 @@ struct BrowserView: UIViewRepresentable {
         if #available(iOS 16.4, *) {
             configuration.preferences.isElementFullscreenEnabled = true
         }
+        // Pont avec la page Photos : même interface que l'app Android (window.OmniCoreApp).
+        configuration.userContentController.addUserScript(WKUserScript(source: Self.bridgeScript, injectionTime: .atDocumentStart, forMainFrameOnly: true))
+        configuration.userContentController.add(context.coordinator, name: "omnicore")
         let view = WKWebView(frame: .zero, configuration: configuration)
         view.navigationDelegate = context.coordinator
+        context.coordinator.startStatusUpdates(view)
         view.allowsBackForwardNavigationGestures = true
         view.isOpaque = false
         view.backgroundColor = .black
@@ -32,14 +36,63 @@ struct BrowserView: UIViewRepresentable {
 
     func updateUIView(_ view: WKWebView, context: Context) {}
 
+    static func dismantleUIView(_ view: WKWebView, coordinator: Coordinator) {
+        coordinator.stopStatusUpdates()
+        view.configuration.userContentController.removeScriptMessageHandler(forName: "omnicore")
+    }
+
+    private static let bridgeScript = """
+    (function () {
+      window.__omnicoreBackupStatus = '{}';
+      var post = function (message) { window.webkit.messageHandlers.omnicore.postMessage(message); };
+      window.OmniCoreApp = {
+        backupStatus: function () { return window.__omnicoreBackupStatus; },
+        enableBackup: function (token, includeExisting, wifiOnly) { post({ action: 'enable', token: String(token), includeExisting: !!includeExisting, wifiOnly: !!wifiOnly }); },
+        backupNow: function () { post({ action: 'now' }); },
+        disableBackup: function () { post({ action: 'disable' }); }
+      };
+    })();
+    """
+
     @MainActor
-    final class Coordinator: NSObject, WKNavigationDelegate {
+    final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         private let home: String?
         private let onFailure: @MainActor (String) -> Void
 
         init(home: String?, onFailure: @escaping @MainActor (String) -> Void) {
             self.home = home
             self.onFailure = onFailure
+        }
+
+        private var statusTimer: Timer?
+
+        /// L'état de la sauvegarde est poussé dans la page toutes les 2 s (lu par la carte « Sauvegarde automatique »).
+        func startStatusUpdates(_ view: WKWebView) {
+            statusTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak view] _ in
+                let status = PhotoBackup.shared.statusJSON()
+                view?.evaluateJavaScript("window.__omnicoreBackupStatus = JSON.stringify(\(status));", completionHandler: nil)
+            }
+        }
+
+        func stopStatusUpdates() {
+            statusTimer?.invalidate()
+            statusTimer = nil
+        }
+
+        /// Ordres de la page Photos, acceptés seulement depuis OmniCore lui-même (cadre principal, même adresse).
+        func userContentController(_ controller: WKUserContentController, didReceive message: WKScriptMessage) {
+            guard message.frameInfo.isMainFrame, message.frameInfo.request.url?.host == home,
+                  let body = message.body as? [String: Any], let action = body["action"] as? String else { return }
+            switch action {
+            case "enable":
+                PhotoBackup.shared.enable(token: body["token"] as? String ?? "", includeExisting: body["includeExisting"] as? Bool ?? true, wifiOnly: body["wifiOnly"] as? Bool ?? true)
+            case "now":
+                PhotoBackup.shared.runSoon()
+            case "disable":
+                PhotoBackup.shared.disable()
+            default:
+                break
+            }
         }
 
         func webView(

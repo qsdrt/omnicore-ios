@@ -27,7 +27,9 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
-        UIBackgroundModes: [audio]
+        UIBackgroundModes: [audio, processing, fetch]
+        NSPhotoLibraryUsageDescription: OmniCore sauvegarde tes photos sur le PC de la maison, comme Google Photos ou iCloud, sans rien envoyer ailleurs.
+        BGTaskSchedulerPermittedIdentifiers: [com.omnicore.ios.photobackup]
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft

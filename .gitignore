@@ -1,0 +1,5 @@
+OmniCore.xcodeproj/
+OmniCore/Info.plist
+build/
+Payload/
+*.ipa
