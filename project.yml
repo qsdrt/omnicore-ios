@@ -1,0 +1,47 @@
+# Projet Xcode décrit en texte (XcodeGen) : `xcodegen generate` crée OmniCore.xcodeproj sur le Mac de compilation.
+name: OmniCore
+options:
+  bundleIdPrefix: com.omnicore
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+targets:
+  OmniCore:
+    type: application
+    platform: iOS
+    sources: [OmniCore]
+    scheme: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.omnicore.ios
+    info:
+      path: OmniCore/Info.plist
+      properties:
+        CFBundleDisplayName: OmniCore
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIBackgroundModes: [audio]
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSLocalNetworkUsageDescription: OmniCore se connecte au PC de la maison sur le réseau local.
+        # Le serveur de la maison est en http (réseau local ou Tailscale, déjà chiffré).
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsLocalNetworking: true
+        CFBundleURLTypes:
+          - CFBundleURLName: com.omnicore.pair
+            CFBundleURLSchemes: [omnicore]

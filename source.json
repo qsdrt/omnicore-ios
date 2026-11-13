@@ -1,0 +1,25 @@
+{
+  "name": "OmniCore",
+  "identifier": "com.omnicore.source",
+  "subtitle": "Le serveur multimédia de la maison",
+  "iconURL": "",
+  "apps": [
+    {
+      "name": "OmniCore",
+      "bundleIdentifier": "com.omnicore.ios",
+      "developerName": "OmniCore",
+      "subtitle": "Films, séries, musique et TV du PC de la maison",
+      "localizedDescription": "OmniCore en plein écran, sans Safari. La lecture continue écran verrouillé. Connexion par le QR code de l’admin.",
+      "iconURL": "",
+      "tintColor": "#e9b960",
+      "versions": [],
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSLocalNetworkUsageDescription": "OmniCore se connecte au PC de la maison sur le réseau local."
+        }
+      }
+    }
+  ],
+  "news": []
+}
