@@ -1,3 +1,43 @@
+# À chaque envoi sur main : compile l'app sur un Mac de GitHub, publie l'IPA et met à jour la source SideStore.
+# L'IPA n'est pas signée : SideStore la signe sur l'iPhone avec l'identifiant Apple gratuit.
+name: App iPhone
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: [source.json, README.md]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Projet Xcode
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Compilation
+        run: |
+          VERSION="1.0.${{ github.run_number }}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          xcodebuild -project OmniCore.xcodeproj -scheme OmniCore -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build \
+            MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+
+      - name: Paquet IPA
+        run: |
+          mkdir -p Payload
           cp -R build/Build/Products/Release-iphoneos/OmniCore.app Payload/
           zip -qry OmniCore.ipa Payload
 
