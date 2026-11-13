@@ -1,0 +1,16 @@
+          cp -R build/Build/Products/Release-iphoneos/OmniCore.app Payload/
+          zip -qry OmniCore.ipa Payload
+
+      - name: Publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v$VERSION" OmniCore.ipa --title "OmniCore $VERSION" --notes "Compilé automatiquement."
+
+      - name: Source SideStore
+        run: |
+          python3 scripts/update_source.py "$VERSION" OmniCore.ipa "${{ github.repository }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source.json
+          git commit -m "Source SideStore : OmniCore $VERSION"
+          git push
