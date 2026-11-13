@@ -31,15 +31,31 @@ struct OmniCoreApp: App {
 
 private struct RootView: View {
     @ObservedObject var store: ServerStore
+    @State private var expiryWarning = AppExpiry.warning()
 
     var body: some View {
-        if let url = store.startURL {
-            BrowserView(url: url, onFailure: store.fail)
-                .id(store.session)
-                .ignoresSafeArea(edges: .bottom)
-                .background(Color.black)
-        } else {
-            SetupView(store: store)
+        VStack(spacing: 0) {
+            // Signature gratuite d'Apple : 7 jours. Prévenir 2 jours avant, avec ce qu'il faut faire.
+            if let expiryWarning {
+                HStack(alignment: .top, spacing: 8) {
+                    Image(systemName: "clock.badge.exclamationmark")
+                    Text(expiryWarning).font(.footnote)
+                    Spacer(minLength: 0)
+                    Button { self.expiryWarning = nil } label: { Image(systemName: "xmark") }
+                        .frame(minWidth: 44, minHeight: 44)
+                        .accessibilityLabel("Masquer")
+                }
+                .padding(.horizontal, 12)
+                .background(Color.orange.opacity(0.25))
+            }
+            if let url = store.startURL {
+                BrowserView(url: url, onFailure: store.fail)
+                    .id(store.session)
+                    .ignoresSafeArea(edges: .bottom)
+                    .background(Color.black)
+            } else {
+                SetupView(store: store)
+            }
         }
     }
 }
