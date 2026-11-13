@@ -2,7 +2,7 @@
   "name": "OmniCore",
   "identifier": "com.omnicore.source",
   "subtitle": "Le serveur multimédia de la maison",
-  "iconURL": "",
+  "iconURL": "https://raw.githubusercontent.com/qsdrt/omnicore-ios/main/OmniCore/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
   "apps": [
     {
       "name": "OmniCore",
@@ -10,15 +10,28 @@
       "developerName": "OmniCore",
       "subtitle": "Films, séries, musique et TV du PC de la maison",
       "localizedDescription": "OmniCore en plein écran, sans Safari. La lecture continue écran verrouillé. Connexion par le QR code de l’admin.",
-      "iconURL": "",
+      "iconURL": "https://raw.githubusercontent.com/qsdrt/omnicore-ios/main/OmniCore/Assets.xcassets/AppIcon.appiconset/icon-1024.png",
       "tintColor": "#e9b960",
-      "versions": [],
+      "versions": [
+        {
+          "version": "1.0.2",
+          "date": "2026-11-13",
+          "downloadURL": "https://github.com/qsdrt/omnicore-ios/releases/download/v1.0.2/OmniCore.ipa",
+          "size": 242281,
+          "minOSVersion": "16.0",
+          "localizedDescription": "Mise à jour automatique."
+        }
+      ],
       "appPermissions": {
         "entitlements": [],
         "privacy": {
           "NSLocalNetworkUsageDescription": "OmniCore se connecte au PC de la maison sur le réseau local."
         }
-      }
+      },
+      "version": "1.0.2",
+      "versionDate": "2026-11-13",
+      "downloadURL": "https://github.com/qsdrt/omnicore-ios/releases/download/v1.0.2/OmniCore.ipa",
+      "size": 242281
     }
   ],
   "news": []
